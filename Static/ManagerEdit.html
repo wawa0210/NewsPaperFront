@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>齐齐哈尔市安全生产应急救援平台风险管控系统</title>
+
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/font-awesome/css/font-awesome.css" rel="stylesheet">
+    <link href="/css/plugins/iCheck/custom.css" rel="stylesheet">
+    <link href="/css/plugins/steps/jquery.steps.css" rel="stylesheet">
+    <link href="/css/animate.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
+
+    <style>
+        .wizard > .content > .body { position: relative; }
+        .sel_Disable{
+        }
+    </style>
+
+</head>
+
+<body style="background-color: #fdfeff;">
+    <div id="wrapper">
+        <div>
+           <div class="row">
+                <div class="col-lg-12">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h5 id="h_title">账户信息编辑(初始账户密码为111111)</small></h5>
+                            <div class="ibox-tools">
+                                <a class="collapse-link">
+                                    <i class="fa fa-chevron-up"></i>
+                                </a>
+                                <a class="close-link">
+                                    <i class="fa fa-times"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="ibox-content">
+                            <div class="row">
+                                <div class="col-sm-8">
+                                    <form class="form-horizontal" id="form_managerInfo">
+                                        <div class="form-group"><label class="col-sm-3 control-label">登录帐号</label>
+                                            <div class="col-sm-8"><input type="text" id="ip_userName" name="userName" onblur="CheckManagerNameExists()" class="form-control" required></div>
+                                        </div>
+                                        <div class="form-group"><label class="col-sm-3 control-label">用户手机号</label>
+                                          <div class="col-sm-8"><input type="text" id="ip_userPhone" name="userPhone" class="form-control" required></div>
+                                        </div>
+                                         <div class="form-group"><label class="col-sm-3 control-label">真实姓名</label>
+                                          <div class="col-sm-8"><input type="text" id="ip_realName" name="realName" class="form-control" required></div>
+                                        </div>
+                                        <div class="form-group"><label class="col-sm-3 control-label">角色权限</label>
+                                            <div class="col-sm-8">
+                                                <select class="form-control m-b" id="sel_Role">
+                                                  <option value="2" selected="selected">普通账号</option>
+                                                  <option value="1">管理员</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="hr-line-dashed"></div>
+                                    </form>
+                                    <div class="col-sm-4 col-sm-offset-2">
+                                        <button class="btn btn-default" id="btn_Cancel" onclick="Cancel()">取消</button>
+                                        <button onclick="SaveManagerInfo()"  class="btn btn-primary" id="btn_Save">保存</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    <input type="hidden"  id="hid_actionType" value="0" />
+    <input type="hidden"  id="hid_managerId" value="0" />
+    <!-- Mainly scripts -->
+    <script src="/js/jquery-2.1.1.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/plugins/metisMenu/jquery.metisMenu.js"></script>
+    <script src="/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+
+    <!-- Custom and plugin javascript -->
+    <script src="/js/inspinia.js"></script>
+    <script src="/js/plugins/pace/pace.min.js"></script>
+
+    <!-- Steps -->
+    <script src="/js/plugins/staps/jquery.steps.min.js"></script>
+
+    <!-- Jquery Validate -->
+    <script src="/js/plugins/validate/jquery.validate.min.js"></script>
+    <script src="/js/common.js"></script>
+    <script src="/js/plugins/datapicker/bootstrap-datepicker.js"></script>
+    <!-- Jquery Validate -->
+    <script src="/js/plugins/validate/jquery.validate.min.js"></script>
+
+    <script>
+
+        var validator;
+
+        $(document).ready(function(){
+            //判断新增or编辑
+            var actionType=getUrlParam("actionType");
+            if(actionType=="add"){
+                $("#hid_actionType").val("0");
+            }
+            else{
+                $("#h_title").html('账户信息编辑');
+                $("#ip_userName").attr("readonly","readonly");
+                var managerId = getUrlParam("id");
+                if(managerId!=null && managerId!="")
+                {
+                    LoadManagerInfo(managerId);
+                }
+                $("#hid_managerId").val(managerId);
+                $("#hid_actionType").val("1");
+            }
+       });
+
+        function Cancel(){
+            $("#iframe_DashBoard",parent.document).attr('src',"/Static/ManagerList.html");
+        }
+
+        function SaveManagerInfo(){
+            var formInfo = $("#form_managerInfo");
+            // Disable validation on fields that are disabled or hidden.
+            formInfo.validate().settings.ignore = ":disabled,:hidden";
+            // Start validation; Prevent going forward if false
+            if(!formInfo.valid()){
+                validator.focusInvalid();
+                return false;
+            }
+
+            var managerInfo ={};
+                managerInfo.id = $("#hid_managerId").val();
+                managerInfo.userName = $("#ip_userName").val();
+                managerInfo.userPwd = "111111";
+                managerInfo.realName = $("#ip_realName").val();
+                managerInfo.tel = $("#ip_userPhone").val();
+                managerInfo.level = $("#sel_Role").val();
+                EditManagerInfo(managerInfo,function(result){
+                   if(result.code=="0"){
+                      alert("保存成功");
+                      Cancel();
+                   }
+                   else{
+                    alert("保存失败");
+                   }
+                });
+        }
+
+        function EditManagerInfo(params,callback){
+            var uri = '/accounts';
+            var userName =params.userName;
+            params = JSON.stringify(params);
+            if($("#hid_actionType").val()=="0"){
+                GetManagerByName(userName,function(res){
+                    if(res.code==0){
+                        if(res.data!=null){
+                            alert("帐户名不能重复");
+                        }
+                        else{
+                             doPost(uri,params,function(res){
+                               if (callback) {
+                                      callback(res);
+                                  }
+                            },"json");
+                        }
+                    }
+
+                })
+            }
+            else{
+                //编辑
+                doPut(uri,params,function(res){
+                   if (callback) {
+                          callback(res);
+                      }
+                },"json");
+            }
+        }
+
+        //加载管理员信息
+        function LoadManagerInfo(managerId){
+            GetManagerInfo(managerId,function(result){
+                if(result.code=="0"){
+                    var managerInfo = result.data;
+                     $("#hid_userName").val(managerInfo.userName);
+                     $("#ip_userName").val(managerInfo.userName);
+                     $("#ip_realName").val(managerInfo.realName);
+                     $("#ip_realName").val(managerInfo.realName);
+                     $("#ip_userPhone").val(managerInfo.tel);
+                     $("#sel_Role").val(managerInfo.level);
+                }
+            });
+        }
+
+        function GetManagerByName(userName,callback){
+            var uri = '/accounts/query?userName='+userName;
+            doGet(uri,function(res){
+                if (callback) {
+                    callback(res);
+                }
+            });
+        }
+
+        //校验用户名是否存在
+        function CheckManagerNameExists(){
+            var userName =$("#ip_userName").val();
+            if(userName!="")
+            {
+                GetManagerByName(userName,function(result){
+                    if(result.code==0){
+                        if(result.data!=null){
+                            return false;
+                        }
+                        else{
+                            return true;
+                        }
+                    }
+                })
+            }
+        }
+
+        function GetManagerInfo(managerId,callback){
+            var uri = '/accounts/'+managerId;
+            doGet(uri,function(res){
+                if (callback) {
+                    callback(res);
+                }
+            });
+        }
+
+        function RediectManagerList(){
+            $("#iframe_DashBoard",parent.document).attr('src',"/Static/ManagerList.html");
+        }
+
+        $(function(){
+             //关闭按钮
+            $(".close-link").click(function(){
+                RediectManagerList();
+            })
+
+            validator = $("#form_managerInfo").validate({  
+                rules: {  
+                    userName: { required: true},
+                    userPhone :{ required: true},
+                    realName :{ required: true}
+                },  
+                messages: {  
+                    userName: {  
+                        required: "登录帐号不能为空"
+                    } ,
+                    userPhone: {  
+                        required: "用户手机号不能为空"
+                    } ,
+                    realName: {  
+                        required: "真实姓名不能为空"
+                    }
+
+                    
+                }  
+            });  
+        })
+    </script>
+
+</body>
+
+</html>

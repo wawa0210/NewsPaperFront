@@ -1,0 +1,254 @@
+!<!DOCTYPE html>
+<html>
+<head>
+    <title>企业信息详情</title>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/font-awesome/css/font-awesome.css" rel="stylesheet">
+
+    <link href="/css/plugins/summernote/summernote.css" rel="stylesheet">
+    <link href="/css/plugins/summernote/summernote-bs3.css" rel="stylesheet">
+
+    <link href="/css/animate.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
+
+    <style type="text/css">
+        .span_title{
+            font-weight: bold;
+        }
+        .span_content{
+            margin-left: 20px;
+        }
+        .m-t-md{
+            margin-top: 5px;
+            margin-left: 10px;
+        }
+        .div_sptitle{
+            display: inline-block;
+            width: 100px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="fadeInRight ecommerce">
+
+        <div class="row">
+            <div>
+                <div class="tabs-container">
+                        <ul class="nav nav-tabs">
+                            <li class="active"><a data-toggle="tab" href="#tab-1">企业基本信息</a></li>
+                            <li class=""><a data-toggle="tab" href="#tab-2"> 重大危险源信息</a></li>
+                            <li class=""><a data-toggle="tab" href="#tab-3"> 风险管控信息</a></li>
+                        </ul>
+                        <div class="tab-content">
+                            <div id="tab-1" class="tab-pane active">
+                                <div class="panel-body">
+
+                                    <fieldset class="form-horizontal">
+                                        <div class="col-md-7">
+                                            <h3>基本信息</h3>
+                                                <div class="m-t-md div_spmain"><div class="div_sptitle"><span class="span_title">行政区</span></div><span class="span_content">黑龙江省齐齐哈尔市龙江县</span></div>
+                                                <div class="m-t-md div_spmain"><div class="div_sptitle"><span class="span_title">详细地址</span></div><span class="span_content">龙江县龙南大道500号</span></div>
+                                                <div class="m-t-md div_spmain"><div class="div_sptitle"><span class="span_title">邮编</span></div><span class="span_content">236005</span></div>
+                                                <div class="m-t-md div_spmain"><div class="div_sptitle"><span class="span_title">单位性质</span></div><span class="span_content">国有大型企业</span></div>
+                                                <div class="m-t-md div_spmain"><div class="div_sptitle"><span class="span_title">安全风险等级</span></div><span class="span_content">2级</span></div>
+                                                <div class="m-t-md div_spmain"><div class="div_sptitle"><span class="span_title">成立时间</span></div><span class="span_content">1993-02-10</span></div>
+                                                <div class="m-t-md div_spmain"><div class="div_sptitle"><span class="span_title">发证时间</span></div><span class="span_content">1998-02-10</span></div>
+                                                <div class="m-t-md div_spmain"><div class="div_sptitle"><span class="span_title">行业类型</span></div><span class="span_content">服务业</span></div>
+                                            <hr>
+                                            <h3>经营信息</h3>
+                                                <div class="m-t-md div_spmain"><div class="div_sptitle"><span class="span_title">企业规模</span></div><span class="span_content">150-500人</span></div>
+                                                <div class="m-t-md div_spmain"><div class="div_sptitle"><span class="span_title">销售收入</span></div><span class="span_content">15-20 亿</span></div>
+                                            <hr>
+                                            <h3>安全负责人信息</h3>
+                                                <div class="m-t-md div_spmain"><div class="div_sptitle"><span class="span_title">法人名称</span></div><span class="span_content">张潇</span></div>
+                                                <div class="m-t-md div_spmain"><div class="div_sptitle"><span class="span_title">分管安全负责人</span></div><span class="span_content">张老三(18721121320)</span></div>
+                                                <div class="m-t-md div_spmain"><div class="div_sptitle"><span class="span_title">安全生产管理机构负责人</span></div><span class="span_content">王老五(13025896325)</span></div>
+                                                <div class="m-t-md div_spmain"><div class="div_sptitle"><span class="span_title">安全值班电话</span></div><span class="span_content">15936523987</span></div>
+                                                <div class="m-t-md div_spmain"><div class="div_sptitle"><span class="span_title">应急咨询电话</span></div><span class="span_content">18965789326</span></div>
+                                        </div>
+                                    </fieldset>
+
+                                </div>
+                            </div>
+                            <div id="tab-2" class="tab-pane">
+                                <div class="panel-body">
+
+                                    <div class="table-responsive">
+                                        <table class="table table-stripped table-bordered" id="tb_dangerousProduct">
+                                            <thead>
+                                            <tr>
+                                                <th>
+                                                    登记号
+                                                </th>
+                                                <th>
+                                                    名称
+                                                </th>
+                                                <th>
+                                                    别名
+                                                </th>
+                                                <th>
+                                                   危险源属性
+                                                </th>
+                                                <th>
+                                                    生产能力(吨)
+                                                </th>
+                                                <th>
+                                                   最大储量(吨)
+                                                </th>
+                                                <th>
+                                                   年生产量(吨)
+                                                </th>
+                                                <th>
+                                                   CAS
+                                                </th>
+                                                <th>
+                                                   UN
+                                                </th>
+                                                <th>
+                                                   剧毒
+                                                </th>
+                                                <th>
+                                                   安全技术说明书
+                                                </th>
+                                            </tr>
+                                            </thead>
+
+                                            <tbody>
+                                            </tbody>
+
+                                        </table>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div id="tab-3" class="tab-pane">
+                                <div class="panel-body">
+
+                                    <div class="table-responsive">
+                                        <table class="table table-stripped table-bordered" id="tb_dangerousProductDetail">
+
+                                            <thead>
+                                            <tr>
+                                                <th>
+                                                    名称
+                                                </th>
+                                                <th style="width: 45%">
+                                                    专家意见
+                                                </th>
+                                                <th style="width: 45%">
+                                                   管控预案措施
+                                                </th>
+                                            </tr>
+                                            </thead>
+
+                                            <tbody>
+                                            </tbody>
+
+                                        </table>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+<!-- Mainly scripts -->
+<script src="/js/jquery-2.1.1.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/plugins/metisMenu/jquery.metisMenu.js"></script>
+<script src="/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+<!-- Custom and plugin javascript -->
+<script src="/js/inspinia.js"></script>
+<script src="/js/plugins/pace/pace.min.js"></script>
+<script src="/js/common.js"></script>
+
+<script type="text/javascript">
+    
+    $(function(){
+        //获得url传参
+        var companyId = getUrlParam("companyId");
+        if(companyId!=null && companyId!=""){
+            GetCompanyDetailInfo(companyId,function(result){
+                if(result.code==0){
+                    var spanContentContrainer= $(".span_content");
+                    spanContentContrainer[0].innerHTML=result.data.provice+result.data.county+result.data.county;
+                    spanContentContrainer[1].innerHTML=result.data.addressDetail;
+                    spanContentContrainer[2].innerHTML=(result.data.zipCode==""?"无":result.data.zipCode);
+                    spanContentContrainer[3].innerHTML=(result.data.economy==""?"无":result.data.economy);  //单位性质
+                    spanContentContrainer[4].innerHTML=(result.data.riskLevel+"级");  //安全风险
+                    spanContentContrainer[5].innerHTML=result.data.foundedTime;  //成立时间
+                    spanContentContrainer[6].innerHTML=result.data.issureTime;  //发证时间
+                    spanContentContrainer[7].innerHTML=result.data.industry;  //行业
+                    spanContentContrainer[8].innerHTML=(result.data.companyScale==""?"无":result.data.companyScale);
+                    spanContentContrainer[9].innerHTML=(result.data.companyIncome==""?"无":result.data.companyIncome);
+                    spanContentContrainer[10].innerHTML=result.data.owner ;  
+                    spanContentContrainer[11].innerHTML=result.data.chiefSafeyName+"("+result.data.chiefSafeyPhone+")" ;  //安全负责人
+                    spanContentContrainer[12].innerHTML=result.data.viceSafeyName+"("+result.data.viceSafeyPhone+")" ;  //安全机构负责人
+                    spanContentContrainer[13].innerHTML=(result.data.onDutyPhone==""?"无":result.data.zipCode);   //值班电话
+                    spanContentContrainer[14].innerHTML=(result.data.emergencyPhone==""?"无":result.data.emergencyPhone) ;   //应急咨询电话
+                }
+            })
+
+            //获得危险源信息
+            GetDangerousProductDetail(companyId,function(result){
+                if(result.code==0){
+                    $.each(result.data,function(index,item){
+                        var info = [];
+                        var infoDetail = [];
+                        info.push("<tr>");
+                        infoDetail.push("<tr>");
+                        info.push("<td>"+item.regesterId+"</td>");
+                        info.push("<td>"+item.productName+"</td>");
+                        infoDetail.push("<td>"+item.productName+"</td>");
+                        info.push("<td>"+item.aliasName+"</td>");
+                        info.push("<td>"+item.productAttributes+"</td>");
+                        info.push("<td>"+item.manufacturability+"</td>");
+                        info.push("<td>"+item.productReserve+"</td>");
+                        info.push("<td>"+item.yearProduct+"</td>");
+                        info.push("<td>"+item.cas+"</td>");
+                        info.push("<td>"+item.un+"</td>");
+                        info.push("<td>"+(item.isToxicity=="1"?"是":"否")+"</td>");
+                        info.push("<td>"+item.instructions+"</td>");
+                        info.push("</tr>");
+                        infoDetail.push("<td>"+item.expertOpinion+"</td>");
+                        infoDetail.push("<td>"+item.managementPlan+"</td>");
+                        infoDetail.push("</tr>");
+                        $("#tb_dangerousProduct tbody").prepend(info.join(""));
+                        $("#tb_dangerousProductDetail tbody").prepend(infoDetail.join(""));
+                    });
+                }
+            });
+        }
+    })
+
+    function GetCompanyDetailInfo(companyId,callback){
+        var uri = '/companies/'+companyId;
+        doGet(uri,function(res){
+            if (callback) {
+                callback(res);
+            }
+        });
+    }
+      function GetDangerousProductDetail(companyId,callback){
+        var uri = '/dangerousproducts?companyId='+companyId;
+        doGet(uri,function(res){
+            if (callback) {
+                callback(res);
+            }
+        });
+    }
+
+</script>
+
+</body>
+</html>

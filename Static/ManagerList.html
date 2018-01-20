@@ -1,0 +1,291 @@
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>管理员列表</title>
+
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/font-awesome/css/font-awesome.css" rel="stylesheet">
+
+    <!-- Data Tables -->
+    <link href="/css/plugins/dataTables/dataTables.bootstrap.min.css" rel="stylesheet">
+    <link href="/css/plugins/dataTables/buttons.bootstrap.min.css" rel="stylesheet">
+
+    <link href="/css/animate.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+    <div id="wrapper">
+        <div class="wrapper wrapper-content animated fadeInRight">
+            <div class="row">
+            <div class="col-lg-12">
+	            <div class="ibox float-e-margins">
+		            <div class="ibox-title">
+		            	<h5>企业信息列表</h5>
+		                <div class="ibox-tools">
+		                    <a class="collapse-link">
+		                        <i class="fa fa-chevron-up"></i>
+		                    </a>
+		                </div>
+		            </div>
+		            <div class="ibox-content">
+			            <div class="">
+			            	<a onclick="AddManagerInfo();" href="javascript:void(0);" class="btn btn-primary ">新增账户信息</a>
+			            </div>
+			            <table class="table table-striped table-bordered table-hover " id="editable" >
+				            <thead>
+					            <tr>
+					                <th>登录账号</th>
+					                <th>用户手机号</th>
+					                <th>真实姓名</th>
+					                <th>角色类别</th>
+					                <th>创建时间</th>
+					                <th style="text-align: center;">操作</th>
+					            </tr>
+				            </thead>
+			            </table>
+		            </div>
+	            </div>
+            </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mainly scripts -->
+    <script src="/js/jquery-2.1.1.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/plugins/metisMenu/jquery.metisMenu.js"></script>
+    <script src="/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+    <script src="/js/plugins/jeditable/jquery.jeditable.js"></script>
+
+    <!-- Data Tables -->
+  	<script src="/js/plugins/dataTables/jquery.dataTables.min.js"></script>
+    <script src="/js/plugins/dataTables/dataTables.bootstrap.js"></script>
+    <script src="/js/plugins/dataTables/dataTables.buttons.min.js"></script>
+    <script src="/js/plugins/dataTables/buttons.bootstrap.min.js"></script>
+    <script src="/js/plugins/dataTables/jszip.min.js"></script>
+    <script src="/js/plugins/dataTables/pdfmake.min.js"></script>
+    <script src="/js/plugins/dataTables/vfs_fonts.js"></script>
+    <script src="/js/plugins/dataTables/buttons.html5.min.js"></script>
+    <script src="/js/plugins/dataTables/buttons.print.min.js"></script>
+
+    <!-- Custom and plugin javascript -->
+    <script src="/js/inspinia.js"></script>
+    <script src="/js/plugins/pace/pace.min.js"></script>
+    <script src="/js/common.js"></script>
+	<script src="/js/plugins/artdialog/jquery.artDialog.js?skin=brief"></script>
+  	<script src="/js/plugins/artdialog/plugins/iframeTools.js"></script>
+    <script src="/js/jquery.cookie.js"></script>
+
+    <!-- Page-Level Scripts -->
+    <script>
+        $(document).ready(function() {
+        	var userId = localStorage.getItem("userid");
+            if(userId=="")
+            {
+                Loginout();
+            }
+            /* Init DataTables */
+            var oTable = $('#editable').DataTable({
+            	lengthChange: false,
+            	dom: 'Bfrtip',
+		       	buttons: [
+		       			{
+		       				'extend':'print',
+		       				'text':'打印'
+		       			},
+		       			{
+		       				'extend':'excel',
+		       				'text':'导出'
+		       			}
+		       		],
+            	 language: {
+			        "sProcessing": "处理中...",
+			        "sLengthMenu": "显示 _MENU_ 项结果",
+			        "sZeroRecords": "没有匹配结果",
+			        "sInfo": "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
+			        "sInfoEmpty": "显示第 0 至 0 项结果，共 0 项",
+			        "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
+			        "sInfoPostFix": "",
+			        "sSearch": "登录帐号:",
+			        "sUrl": "",
+			        "sEmptyTable": "表中数据为空",
+			        "sLoadingRecords": "载入中...",
+			        "sInfoThousands": ",",
+			        "oPaginate": {
+			            "sFirst": "首页",
+			            "sPrevious": "上页",
+			            "sNext": "下页",
+			            "sLast": "末页"
+			        },
+			        "oAria": {
+			            "sSortAscending": ": 以升序排列此列",
+			            "sSortDescending": ": 以降序排列此列"
+			        }
+			    },
+			    "ordering": false, //禁止排序
+			    "bLengthChange": false,
+                "bPaginate": true, //翻页功能
+			    "serverSide": true,  //启用服务器端分页
+			    "pageLength":10,
+			    "tabIndex": 1,
+			    ajax: function (data, callback, settings) {
+	                //封装请求参数
+	                var param = {};
+	                param.pageSize = data.length;//页面显示记录条数，在页面显示每页显示多少项的时候
+	                param.currentPage = (data.start / data.length)+1;//当前页码
+	                param.userName = (data.search.value==null?"":data.search.value);//企业名称
+
+	                //ajax请求数据
+	                GetPageMangerInfo(param,function(result){
+	                	if(result.code=="0"){
+	                		var pageData= result.data;
+	                		setTimeout(function () {
+	                			//封装返回数据
+	                            var returnData = {};
+	                            returnData.recordsFiltered = pageData.totalCounts; 
+	                            returnData.recordsTotal = pageData.totalCounts;//返回数据全部记录
+	                            returnData.data = pageData.items;//返回的数据列表
+	                            //调用DataTables提供的callback方法，代表数据已封装完成并传回DataTables进行渲染
+	                            callback(returnData);
+
+	                		}, 200);
+	                	}
+	                })
+            	},
+            	//列表表头字段
+	            columns: [
+	                { "data": "userName" },
+	                { "data": "tel" },
+	                { "data": "realName" },
+	                {  
+		                "data": null,  
+		                "orderable": false,  
+		                "render": function ( data, type, full, meta ) {
+			                return (data.level==1 ?'管理员':'普通账户');
+			            }
+			        },
+	                { "data": "addTime" },
+	                {
+
+		                "data": null,  
+		                "orderable": false,  
+		                "render": function ( data, type, full, meta ) {
+			                return GetEditButtonStr(data.id);
+			            }  
+			        }
+	            ]
+            });
+             oTable.buttons().container().appendTo($('#editable_filter .col-sm-6:eq(0)'));
+        });
+
+       function GetPageMangerInfo(param,callback){
+    	  	var uri = '/accounts?userName='+param.userName+'&currentPage='+param.currentPage+'&pageSize='+param.pageSize;
+            doGet(uri,function(res){
+                if (callback) {
+                    callback(res);
+                }
+            });
+        }
+
+        function GetEditButtonStr(id){
+        	var buttonStr ='<div class="btn-group"><button class="btn-danger btn btn-xs" onclick="DeleteManager(\''+id+'\')">删除</button>';
+        	//超级管理员才能编辑用户信息
+        	if(localStorage.getItem("userid")=="14E1952B-F674-4EE9-BD18-D4EB2F71084B"){
+        		buttonStr += '<button class="btn-primary btn btn-xs" onclick="UpdateManager(\''+id+'\')">编辑</button>';
+        		buttonStr += '<button class="btn-danger btn btn-xs" onclick="ResetManagerPwd(\''+id+'\')">重置密码</button>';
+        	}
+        	buttonStr += '</div>';
+        	return buttonStr;
+        }
+
+        function AddManagerInfo(){
+        	$("#iframe_DashBoard",parent.document).attr('src',"/Static/ManagerEdit.html?actionType=add");
+        }
+
+        function UpdateManager(id){
+        	$("#iframe_DashBoard",parent.document).attr('src',"/Static/ManagerEdit.html?actionType=edit&id="+id);
+        }
+
+		//删除公司信息
+        function ResetManagerPwd(id){
+        	var dialog = art.dialog({
+			    title: '重置密码',
+			    content: '你确认将该管理员密码重置成(111111)么？',
+			    lock:true,
+			    ok: function(){
+			    	var managerInfo ={};
+	                managerInfo.id = id;
+	                managerInfo.userPwd = '111111';
+			    	ResetManagerPwdInfo(managerInfo,function(result){
+			    		if(result.code=="0"){
+		    				alert("重置成功！");
+		    				$("#iframe_DashBoard",parent.document).attr('src',"/Static/ManagerList.html");
+			    		}
+			    		else{
+			    			alert(result.message);
+			    		}
+			    	})
+			    },
+			    cancel:function(){
+			    }
+			});
+        }
+        //删除公司信息
+        function DeleteManager(id){
+        	var dialog = art.dialog({
+			    title: '删除管理员帐号信息',
+			    content: '删除管理员帐号信息,用户将无法再登录,请慎重！',
+			    lock:true,
+			    ok: function(){
+			    	DeleteManagerInfo(id,function(result){
+			    		if(result.code=="0"){
+			    			if(result.data=="删除成功"){
+			    				alert("删除成功！");
+			    				$("#iframe_DashBoard",parent.document).attr('src',"/Static/ManagerList.html");
+			    			}
+			    		}
+			    		else{
+			    			alert(result.message);
+			    		}
+			    	})
+			    },
+			    cancel:function(){
+			    }
+			});
+        }
+
+        function DeleteManagerInfo(id,callback){
+            var uri = '/accounts/'+id;
+            //编辑
+            doDelete(uri,null,function(res){
+               if (callback) {
+                      callback(res);
+                  }
+            },"json");
+        }
+
+        function ResetManagerPwdInfo(params,callback){
+            var uri = '/accounts/pwd';
+            params = JSON.stringify(params);
+            //编辑
+            doPut(uri,params,function(res){
+               if (callback) {
+                      callback(res);
+                  }
+            },"json");
+        }
+    </script>
+
+</body>
+
+</html>
+
+
+

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>齐齐哈尔市安全生产应急救援平台风险管控系统</title>
+
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/font-awesome/css/font-awesome.css" rel="stylesheet">
+    <link href="/css/plugins/iCheck/custom.css" rel="stylesheet">
+    <link href="/css/plugins/steps/jquery.steps.css" rel="stylesheet">
+    <link href="/css/animate.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
+
+    <style>
+        .wizard > .content > .body { position: relative; }
+        .sel_Disable{
+        }
+    </style>
+
+</head>
+
+<body style="background-color: #fdfeff;">
+    <div id="wrapper">
+        <div>
+           <div class="row">
+                <div class="col-lg-12">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h5>账户信息编辑</small></h5>
+                            <div class="ibox-tools">
+                                <a class="collapse-link">
+                                    <i class="fa fa-chevron-up"></i>
+                                </a>
+                                <a class="close-link">
+                                    <i class="fa fa-times"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="ibox-content">
+                            <div class="row">
+                                <div class="col-sm-8">
+                                    <form class="form-horizontal" id="form_managerInfo">
+                                        <div class="form-group"><label class="col-sm-3 control-label">新密码</label>
+                                            <div class="col-sm-8"><input type="password" id="ip_pwd" name="ip_pwd" class="form-control"></div>
+                                        </div>
+                                        <div class="form-group"><label class="col-sm-3 control-label">确认密码</label>
+                                          <div class="col-sm-8"><input type="password" id="ip_repPwd" name="ip_repPwd" class="form-control"></div>
+                                        </div>
+                                    </form>
+                                    <div class="col-sm-4 col-sm-offset-2">
+                                        <button class="btn btn-default" id="btn_Cancel" onclick="Cancel()">取消</button>
+                                        <button onclick="SaveUserPwd()"  class="btn btn-primary" id="btn_Save">保存</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    <input type="hidden"  id="hid_managerId" value="0" />
+    <!-- Mainly scripts -->
+    <script src="/js/jquery-2.1.1.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/plugins/metisMenu/jquery.metisMenu.js"></script>
+    <script src="/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+
+    <!-- Custom and plugin javascript -->
+    <script src="/js/inspinia.js"></script>
+    <script src="/js/plugins/pace/pace.min.js"></script>
+
+    <!-- Steps -->
+    <script src="/js/plugins/staps/jquery.steps.min.js"></script>
+
+    <!-- Jquery Validate -->
+    <script src="/js/plugins/validate/jquery.validate.min.js"></script>
+    <script src="/js/common.js"></script>
+    <script src="/js/plugins/datapicker/bootstrap-datepicker.js"></script>
+    <!-- Jquery Validate -->
+    <script src="/js/plugins/validate/jquery.validate.min.js"></script>
+    <script src="/js/jquery.cookie.js"></script>
+
+    <script>
+
+        var validator;
+
+        $(document).ready(function(){
+            var managerId = getUrlParam("managerId");
+            if(managerId==null || managerId=="")
+            {
+                Loginout();
+            }
+            $("#hid_managerId").val(managerId);
+
+            $( "#form_managerInfo" ).validate({
+              rules: {
+                ip_pwd: "required",
+                ip_repPwd: {
+                  equalTo: "#ip_pwd"
+                }
+              },
+               messages: {  
+                    ip_pwd: {  
+                        required: "密码不能为空"
+                    } ,
+                    ip_pwd: {  
+                        required: "两次密码输入不一致，请重新输入！"
+                    } 
+                }  
+            });
+
+            //关闭按钮
+            $(".close-link").click(function(){
+                Loginout();
+            })
+       });
+
+        function Cancel(){
+           Loginout();
+        }
+
+        function SaveUserPwd(){
+            var formInfo = $("#form_managerInfo");
+            // Disable validation on fields that are disabled or hidden.
+            formInfo.validate().settings.ignore = ":disabled,:hidden";
+            // Start validation; Prevent going forward if false
+            if(!formInfo.valid()){
+                validator.focusInvalid();
+                return false;
+            }
+            var managerInfo ={};
+                managerInfo.id = $("#hid_managerId").val();
+                managerInfo.userPwd = $("#ip_pwd").val();
+                EditManagerPwd(managerInfo,function(result){
+                   if(result.code=="0"){
+                      alert("保存成功");
+                      Cancel();
+                   }
+                   else{
+                    alert("保存失败");
+                   }
+                });
+        }
+
+        function EditManagerPwd(params,callback){
+            var uri = '/accounts/pwd';
+            params = JSON.stringify(params);
+            //编辑
+            doPut(uri,params,function(res){
+               if (callback) {
+                      callback(res);
+                  }
+            },"json");
+        }
+    </script>
+
+</body>
+
+</html>

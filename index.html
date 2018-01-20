@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>齐齐哈尔市安全生产应急救援平台风险管控系统</title>
+
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="font-awesome/css/font-awesome.css" rel="stylesheet">
+
+    <!-- Toastr style -->
+    <link href="css/plugins/toastr/toastr.min.css" rel="stylesheet">
+
+    <!-- Gritter -->
+    <link href="js/plugins/gritter/jquery.gritter.css" rel="stylesheet">
+
+    <link href="css/animate.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+
+</head>
+
+<body>
+    <div id="wrapper">
+        <nav class="navbar-default navbar-static-side" role="navigation">
+            <div class="sidebar-collapse">
+                <ul class="nav metismenu" id="side-menu">
+                    <li class="nav-header">
+                        <div class="dropdown profile-element"> <span>
+                            <!-- <img alt="image" class="img-circle" src="img/profile_small.jpg" /> -->
+                             </span>
+                            <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                            <span class="clear"> <span class="block m-t-xs"> <strong class="font-bold" id="strong_UserName"></strong>
+                            </span> <span class="text-muted text-xs block" id="strong_Phone"><b class="caret"></b></span> </span> </a>
+                        </div>
+                        <div class="logo-element">
+                            风控
+                        </div>
+                    </li>
+                    <li class="active">
+                        <a href="index.html"><i class="fa fa-th-large"></i> <span class="nav-label">Dashboards</span> <span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level" id="ul_Menu">
+                            <li class="active"><a  onclick="LoadMenu(0)">企业地图展示</a></li>
+                            <li><a onclick="LoadMenu(1)">企业信息管理</a></li>
+                            <li><a onclick="LoadMenu(2)" class="li_IsAuth">账号管理</a></li>
+                            <!-- <li><a onclick="LoadMenu(3)" class="li_IsAuth">角色管理</a></li> -->
+                        </ul>
+                    </li>
+                </ul>
+
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="gray-bg dashbard-1">
+            <div class="row border-bottom">
+                <nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
+                    <!-- <div class="navbar-header">
+                        <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
+                        <form role="search" class="navbar-form-custom" action="search_results.html">
+                        </form>
+                    </div> -->
+                        <ul class="nav navbar-top-links navbar-right">
+                            <li>
+                                <span class="m-r-sm text-muted welcome-message">齐齐哈尔市安全生产应急救援平台风险管控系统</span>
+                            </li>
+                            <li>
+                                <!-- 
+                                <a onclick="Loginout()">
+                                    <i class="fa fa-sign-out"></i> 退出系統
+                                </a> -->
+                                <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                                <span class="clear"><span class=" fa text-muted text-xs block fa-tasks"></span> </span> </a>
+                                <ul class="dropdown-menu animated fadeInRight m-t-xs">
+                                    <li><a onclick="ModifyPwd()">修改密码</a></li>
+                                    <li class="divider"></li>
+                                    <li><a onclick="Loginout()">退出系統</a></li>
+                                </ul>
+
+                            </li>
+                        </ul>
+                </nav>
+            </div>
+            <div class="gray-bg" id="div_MainContent">
+                <iframe runat="server" ID="iframe_DashBoard" width="100%" frameborder="no" border="0"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mainly scripts -->
+    <script src="js/jquery-2.1.1.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/plugins/metisMenu/jquery.metisMenu.js"></script>
+    <script src="js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+    <!-- Peity -->
+    <script src="js/plugins/peity/jquery.peity.min.js"></script>
+
+    <!-- Custom and plugin javascript -->
+    <script src="js/inspinia.js"></script>
+    <script src="js/plugins/pace/pace.min.js"></script>
+
+    <!-- jQuery UI -->
+    <script src="js/plugins/jquery-ui/jquery-ui.min.js"></script>
+
+    <!-- Toastr -->
+    <script src="js/plugins/toastr/toastr.min.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/jquery.cookie.js"></script>
+
+ <script>
+        $(document).ready(function() {
+
+            var userId =  $.cookie('userid');
+            if(userId==null){
+                window.location.href="login.html";
+                return;
+            }
+
+            GetManagerInfo(userId,function(result){
+                if(result.code==0){
+                    if(result.data.level==2){
+                        $(".li_IsAuth").hide();
+                    }
+                    $("#strong_UserName").html(result.data.realName);
+                    $("#strong_Phone").html(result.data.tel);
+                     setTimeout(function() {
+                            toastr.options = {
+                                closeButton: true,
+                                progressBar: true,
+                                showMethod: 'slideDown',
+                                timeOut: 500};
+                            toastr.success(result.data.realName, '欢迎登陆齐齐哈尔化学品预警系统');
+                            }, 1300);
+                    LoadMenu(0);
+                  }
+            });
+           
+            function GetManagerInfo(userid,callback){
+                var uri = '/accounts/'+userid;
+                doGet(uri,function(res){
+                         if (callback) {
+                                callback(res);
+                            }
+                });
+            }
+
+            $(".theme-config-box").removeClass("show");
+            $("body").toggleClass("mini-navbar");
+            window.SmoothlyMenu()
+        });
+
+        function LoadMenu(index){
+            var url="";
+            switch (index) {
+                case 0: url = "Dashboard.html"; break;
+                case 1: url = "/Static/CompanyList.html"; break;
+                case 2: url = "/Static/ManagerList.html"; break;
+                case 3: url = "/Static/RoleList.html"; break;
+            }
+            $("#iframe_DashBoard").height($(document).height()+50);
+            $("#iframe_DashBoard").attr('src',url);
+        }
+
+        //退出登录
+        function Loginout(){
+            localStorage.clear();
+            $.removeCookie("token");
+            $.removeCookie("userid");
+            window.location.href = "login.html";
+        }
+
+        //修改密码
+        function ModifyPwd(){
+            var userId = localStorage.getItem("userid");
+            if(userId=="")
+            {
+                Loginout();
+            }
+            else{
+                $("#iframe_DashBoard").attr('src',"/Static/ModifyPwd.html?managerId="+userId);
+            }
+        }
+  </script>
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>齐齐哈尔市安全生产应急救援平台风险管控系统</title>
+
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="font-awesome/css/font-awesome.css" rel="stylesheet">
+
+    <link href="css/animate.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+
+</head>
+
+<body class="gray-bg">
+
+    <div class="middle-box text-center loginscreen animated fadeInDown">
+        <div>
+            <form class="m-t" role="form" action="index.html">
+                <div class="form-group">
+                    <input type="text" class="form-control" id="ip_UserName" placeholder="用户名" required="">
+                </div>
+                <div class="form-group">
+                    <input type="password" class="form-control" id="ip_UserPwd" placeholder="密码" required="">
+                </div>
+                <button type="button" id="btn_Login" class="btn btn-primary block full-width m-b">登录</button>
+            </form>
+            <p class="m-t"> <small>齐齐哈尔市安全生产应急救援平台风险管控系统</small> </p>
+        </div>
+    </div>
+
+    <!-- Mainly scripts -->
+    <script src="js/jquery-2.1.1.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/jquery.cookie.js"></script>
+    <script type="text/javascript">
+        $(function(){
+            $("#btn_Login").click(function(e){
+                  var userName = $("#ip_UserName").val();
+                  var userPwd = $("#ip_UserPwd").val();
+                  if(userName!==null && userPwd !=null){
+                         var uri = '/auth/token';
+                         var data =  {"userName": userName,"userPwd": userPwd};
+                         data = JSON.stringify(data);
+                         doPost(uri, data, function (res) {
+                              if(res!=null && res.code==0){
+                                localStorage.setItem('userinfo', res.data.userInfo);
+                                localStorage.setItem('userid', res.data.userInfo.id);
+                                localStorage.setItem('userinfo', JSON.stringify(res.data.userInfo));
+
+                                $.cookie('token', res.data.token);
+                                $.cookie('userid', res.data.userInfo.id);
+                                window.location.href="index.html";  
+                              }
+                              else{
+                                alert("登录失败，请重新登录!");
+                              }
+                        },"json");
+                  }
+                  else{
+                    alert("账户信息不能为空!");
+                    return;
+                  }
+                });
+        })
+    </script>
+</body>
+
+</html>
