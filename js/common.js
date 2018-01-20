@@ -10,7 +10,7 @@ function guid() {
 
 //依赖全局WebApiHost参数
 var WebApiToken;
-var WebApiHost="http://localhost:4025/";
+var WebApiHost="http://localhost:2579/";
 // var WebApiHost="http://221.209.110.28:5700/";
 function doRequest(apiHost, method, data, callback, contentType, showtips) {
     //GetCookie

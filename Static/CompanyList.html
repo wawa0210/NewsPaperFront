@@ -6,7 +6,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>齐齐哈尔市安全生产应急救援平台风险管控系统</title>
+    <title>小程序新闻管理平台</title>
 
     <link href="/css/bootstrap.min.css" rel="stylesheet">
     <link href="/font-awesome/css/font-awesome.css" rel="stylesheet">
@@ -28,7 +28,7 @@
             <div class="col-lg-12">
 	            <div class="ibox float-e-margins">
 		            <div class="ibox-title">
-		            	<h5>企业信息列表</h5>
+		            	<h5>新闻列表</h5>
 		                <div class="ibox-tools">
 		                    <a class="collapse-link">
 		                        <i class="fa fa-chevron-up"></i>
@@ -37,23 +37,15 @@
 		            </div>
 		            <div class="ibox-content">
 			            <div class="">
-			            	<a onclick="AddCompanyInfo();" href="javascript:void(0);" class="btn btn-primary ">新增企业信息</a>
+			            	<a onclick="AddCompanyInfo();" href="javascript:void(0);" class="btn btn-primary ">新增新闻</a>
 			            </div>
 			            <table class="table table-striped table-bordered table-hover " id="editable" >
 				            <thead>
 					            <tr>
-					                <th>公司名称</th>
-					                <th>公司法人</th>
-					                <th>安全等级</th>
-					                <th>所属行业</th>
-					                <th>经济类型</th>
-					                <th>成立时间</th>
-					                <th>发证时间</th>
-					                <th>详细地址</th>
-					                <th>分管安全负责人</th>
-					                <th>分管安全负责人电话</th>
-					                <th>生产机构负责人</th>
-					                <th>生产机构负责人电话</th>
+					                <th>标题</th>
+					                <th>外链地址</th>
+					                <th>新闻简介</th>
+					                <th>创建时间</th>
 					                <th style="text-align: center;">操作</th>
 					            </tr>
 				            </thead>
@@ -99,10 +91,10 @@
             	lengthChange: false,
             	dom: 'Bfrtip',
 		       	buttons: [
-		       			{
-		       				'extend':'print',
-		       				'text':'打印'
-		       			},
+		       			// {
+		       			// 	'extend':'print',
+		       			// 	'text':'打印'
+		       			// },
 		       			{
 		       				'extend':'excel',
 		       				'text':'导出'
@@ -116,7 +108,7 @@
 			        "sInfoEmpty": "显示第 0 至 0 项结果，共 0 项",
 			        "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
 			        "sInfoPostFix": "",
-			        "sSearch": "企业名称:",
+			        "sSearch": "新闻名称:",
 			        "sUrl": "",
 			        "sEmptyTable": "表中数据为空",
 			        "sLoadingRecords": "载入中...",
@@ -146,10 +138,10 @@
 	                var param = {};
 	                param.pageSize = data.length;//页面显示记录条数，在页面显示每页显示多少项的时候
 	                param.currentPage = (data.start / data.length)+1;//当前页码
-	                param.companyName = (data.search.value==null?"":data.search.value);//企业名称
+	                param.title = (data.search.value==null?"":data.search.value);//企业名称
 
 	                //ajax请求数据
-	                GetPageCompanyInfo(param,function(result){
+	                GetPageNewsInfo(param,function(result){
 	                	if(result.code=="0"){
 	                		var pageData= result.data;
 	                		setTimeout(function () {
@@ -167,23 +159,15 @@
             	},
             	//列表表头字段
 	            columns: [
-	                { "data": "companyName" },
-	                { "data": "owner" },
-	                { "data": "owner" },
-	                { "data": "riskLevel" },
-	                { "data": "industry" },
-	                { "data": "economy" },
-	                { "data": "foundedTime" },
-	                { "data": "issureTime" },
-	                { "data": "chiefSafeyName" },
-	                { "data": "chiefSafeyPhone" },
-	                { "data": "viceSafeyName" },
-	                { "data": "viceSafeyPhone" },
+	                { "data": "title" },
+	                { "data": "hrefUrl" },
+	                { "data": "shortContent" },
+	                { "data": "createTime" },
 	                {  
 		                "data": null,  
 		                "orderable": false,  
 		                "render": function ( data, type, full, meta ) {  
-			                return GetEditButtonStr(data.id,data.companyName);  
+			                return GetEditButtonStr(data.newsId,data.title);  
 			            }  
 			        }  
 	            ]
@@ -193,12 +177,12 @@
         });
 
         function GetEditButtonStr(companyId,companyName){
-            return '<div class="btn-group"><button class="btn-white btn btn-xs" onclick="EditCompany(\''+companyId+'\')">编辑</button><button class="btn-danger btn btn-xs" onclick="DeleteCompany(\''+companyId+'\')">删除</button><button class="btn-primary btn btn-xs" onclick="ManageDanerousProduct(\''+companyId+'\',\''+companyName+'\')">危险源信息</button></div>';
+            return '<div class="btn-group"><button class="btn-white btn btn-xs" onclick="EditCompany(\''+companyId+'\')">编辑</button></div>';
         }
 
 
-	    function GetPageCompanyInfo(param,callback){
-		  	var uri = '/companies/pageinfo?companyName='+param.companyName+'&currentPage='+param.currentPage+'&pageSize='+param.pageSize;
+	    function GetPageNewsInfo(param,callback){
+		  	var uri = '/news?title='+param.title+'&currentPage='+param.currentPage+'&pageSize='+param.pageSize;
 		    doGet(uri,function(res){
 		        if (callback) {
 		            callback(res);
