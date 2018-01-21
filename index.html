@@ -115,24 +115,34 @@
                 return;
             }
 
-            GetManagerInfo(userId,function(result){
-                if(result.code==0){
-                    if(result.data.level==2){
-                        $(".li_IsAuth").hide();
-                    }
-                    $("#strong_UserName").html(result.data.realName);
-                    $("#strong_Phone").html(result.data.tel);
-                     setTimeout(function() {
-                            toastr.options = {
-                                closeButton: true,
-                                progressBar: true,
-                                showMethod: 'slideDown',
-                                timeOut: 500};
-                            toastr.success(result.data.realName, '欢迎登陆小程序后台管理系统');
-                            }, 1300);
-                    LoadMenu(0);
-                  }
-            });
+            // GetManagerInfo(userId,function(result){
+            //     if(result.code==0){
+            //         if(result.data.level==2){
+            //             $(".li_IsAuth").hide();
+            //         }
+            //         $("#strong_UserName").html(result.data.realName);
+            //         $("#strong_Phone").html(result.data.tel);
+            //          setTimeout(function() {
+            //                 toastr.options = {
+            //                     closeButton: true,
+            //                     progressBar: true,
+            //                     showMethod: 'slideDown',
+            //                     timeOut: 500};
+            //                 toastr.success(result.data.realName, '欢迎登陆小程序后台管理系统');
+            //                 }, 1300);
+            //         LoadMenu(0);
+            //       }
+            // });
+
+            setTimeout(function() {
+                        toastr.options = {
+                            closeButton: true,
+                            progressBar: true,
+                            showMethod: 'slideDown',
+                            timeOut: 500};
+                        toastr.success('', '欢迎登陆小程序后台管理系统');
+                        }, 1300);
+            LoadMenu(0);
            
             function GetManagerInfo(userid,callback){
                 var uri = '/accounts/'+userid;
@@ -149,10 +159,10 @@
         });
 
         function LoadMenu(index){
-            var url="/Static/CompanyList.html";
+            var url="/Static/NewsList.html";
             // switch (index) {
-            //     case 0: url = "/Static/CompanyList.html"; break;
-            //     // case 1: url = "/Static/CompanyList.html"; break;
+            //     case 0: url = "/Static/NewsList.html"; break;
+            //     // case 1: url = "/Static/NewsList.html"; break;
             //     // case 2: url = "/Static/ManagerList.html"; break;
             //     // case 3: url = "/Static/RoleList.html"; break;
             // }

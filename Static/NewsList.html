@@ -37,7 +37,7 @@
 		            </div>
 		            <div class="ibox-content">
 			            <div class="">
-			            	<a onclick="AddCompanyInfo();" href="javascript:void(0);" class="btn btn-primary ">新增新闻</a>
+			            	<a onclick="AddNewsInfo();" href="javascript:void(0);" class="btn btn-primary ">新增新闻</a>
 			            </div>
 			            <table class="table table-striped table-bordered table-hover " id="editable" >
 				            <thead>
@@ -197,8 +197,6 @@
 
             return renderStr;
         }
-
-
 	    function GetPageNewsInfo(param,callback){
 		  	var uri = '/news?title='+param.title+'&currentPage='+param.currentPage+'&pageSize='+param.pageSize;
 		    doGet(uri,function(res){
@@ -208,17 +206,12 @@
 		    });
         }
 
-        function AddCompanyInfo(){
-            $("#iframe_DashBoard",parent.document).attr('src',"/Static/CompanyEdit.html?actionType=add");
+        function AddNewsInfo(){
+            $("#iframe_DashBoard",parent.document).attr('src',"/Static/NewsEdit.html?actionType=add");
         }
-        function EditNews(companyId){
-            $("#iframe_DashBoard",parent.document).attr('src',"/Static/CompanyEdit.html?actionType=edit&companyId="+companyId);
+        function EditNews(newsId){
+            $("#iframe_DashBoard",parent.document).attr('src',"/Static/NewsEdit.html?actionType=edit&newsId="+newsId);
         }
-        //管理危险源信息
-          function ManageDanerousProduct(companyId,companyName){
-            $("#iframe_DashBoard",parent.document).attr('src',"/Static/DangerousProductList.html?companyId="+companyId+"&companyName="+companyName);
-        }
-        //删除公司信息
         function DisableNews(newsId){
             var dialog = art.dialog({
                 title: '下线新闻',
@@ -232,7 +225,7 @@
                         else{
                         	alert("下线失败！")
                         }
-                        $("#iframe_DashBoard",parent.document).attr('src',"/Static/CompanyList.html");
+                        $("#iframe_DashBoard",parent.document).attr('src',"/Static/NewsList.html");
                     })
                 },
                 cancel:function(){

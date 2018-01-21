@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>新闻管理平台</title>
+
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/font-awesome/css/font-awesome.css" rel="stylesheet">
+    <link href="/css/plugins/iCheck/custom.css" rel="stylesheet">
+    <link href="/css/plugins/steps/jquery.steps.css" rel="stylesheet">
+    <link href="/css/animate.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
+    <link href="/css/plugins/summernote/summernote.css" rel="stylesheet">
+    <link href="/css/plugins/summernote/summernote-bs4.css" rel="stylesheet">
+
+    <style>
+        .wizard > .content > .body { position: relative; }
+        .sel_Disable{
+        }
+    </style>
+
+</head>
+
+<body style="background-color: #fdfeff;">
+    <div id="wrapper">
+        <div>
+           <div class="row">
+                <div class="col-lg-12">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h5>新闻编辑</small></h5>
+                            <div class="ibox-tools">
+                                <a class="collapse-link">
+                                    <i class="fa fa-chevron-up"></i>
+                                </a>
+                                <a class="close-link">
+                                    <i class="fa fa-times"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="ibox-content">
+                            <div class="row">
+                                <div class="">
+                                    <form class="form-horizontal" id="form_NewsInfo">
+                                        <div class="form-group"><label class="col-sm-2 control-label">新闻标题</label>
+                                            <div class="col-sm-9"><input type="text" id="ip_newsTitle" name="newsTitle" class="form-control" required></div>
+                                        </div>
+                                        <div class="form-group"><label class="col-sm-2 control-label">外链地址</label>
+                                            <div class="col-sm-9"><input type="text" id="ip_hrefUrl" name="newsHrefUrl" class="form-control"></div>
+                                        </div>
+                                        <div class="form-group"><label class="col-sm-2 control-label">新闻概要</label>
+                                            <div class="col-sm-9">
+                                                <textarea class="form-control" name="newsShortContent" id="ip_newsShortContent" ></textarea>
+                                            </div>
+                                        </div>
+                                         <div class="form-group"><label class="col-sm-2 control-label">新闻详情</label>
+                                            <div class="col-sm-9">
+                                                <div  id="summernote"></div>
+                                            </div>
+                                        </div>
+                                        <div class="hr-line-dashed"></div>
+                                    </form>
+                                    <div class="col-sm-4 col-sm-offset-2">
+                                        <button class="btn btn-default" id="btn_Cancel" onclick="Cancel()">取消</button>
+                                        <button onclick="SaveNewsInfo()"  class="btn btn-primary" id="btn_Save">保存</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    <input type="hidden"  id="hid_actionType" value="0" />
+    <input type="hidden"  id="hid_newsId" value="0" />
+    <input type="hidden"  id="hid_county" />
+    <!-- Mainly scripts -->
+    <script src="/js/jquery-2.1.1.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/plugins/metisMenu/jquery.metisMenu.js"></script>
+    <script src="/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+
+    <!-- Custom and plugin javascript -->
+    <script src="/js/inspinia.js"></script>
+    <script src="/js/plugins/pace/pace.min.js"></script>
+
+    <!-- Steps -->
+    <script src="/js/plugins/staps/jquery.steps.min.js"></script>
+
+    <!-- Jquery Validate -->
+    <script src="/js/plugins/validate/jquery.validate.min.js"></script>
+    <script src="/js/common.js"></script>
+    <script src="/js/plugins/datapicker/bootstrap-datepicker.js"></script>
+    <!-- Jquery Validate -->
+    <script src="/js/plugins/validate/jquery.validate.min.js"></script>
+    <script src="/js/plugins/summernote/summernote.js"></script>
+    <script src="/js/plugins/summernote/summernote-bs4.min.js"></script>
+    <script src="/js/plugins/summernote/summernote-zh-CN.js"></script>
+
+
+    <script>
+
+        var validator;
+
+        $(document).ready(function(){
+             $('#summernote').summernote(
+            {
+                lang: 'zh-CN' ,
+                placeholder: '请输入新闻详情',
+            });
+
+            //判断新增or编辑
+            var actionType=getUrlParam("actionType");
+            if(actionType=="add"){
+                $("#hid_actionType").val("0");
+            }
+            else{
+                var newsId = getUrlParam("newsId");
+                if(newsId!=null && newsId!="")
+                {
+                    LoadNewsInfo(newsId);
+                }
+                $("#hid_newsId").val(newsId);
+                $("#hid_actionType").val("1");
+            }
+       });
+
+        function Cancel(){
+            $("#iframe_DashBoard",parent.document).attr('src',"/Static/NewsList.html");
+        }
+
+        function SaveNewsInfo(){
+            var formInfo = $("#form_NewsInfo");
+            formInfo.validate().settings.ignore = ":disabled,:hidden";
+            if(!formInfo.valid()){
+                validator.focusInvalid();
+                return false;
+            }
+
+            var newsInfo ={};
+                newsInfo.newsId = $("#hid_newsId").val();
+                newsInfo.title = $("#ip_newsTitle").val();
+                newsInfo.shortContent = $("#ip_newsShortContent").val();
+                newsInfo.content = $('#summernote').summernote('code');
+                 $('#summernote').summernote('destroy');
+                newsInfo.hrefUrl = $("#ip_hrefUrl").val();
+                EditNewsInfo(newsInfo,function(result){
+                   if(result.code=="0"){
+                      alert("保存成功");
+                      Cancel();
+                   }
+                   else{
+                    alert("保存失败");
+                   }
+                });
+        }
+
+        function EditNewsInfo(params,callback){
+            var uri = '/news';
+            params = JSON.stringify(params);
+            if($("#hid_actionType").val()=="0"){
+                doPost(uri,params,function(res){
+                   if (callback) {
+                          callback(res);
+                      }
+                },"json");
+            }
+            else{
+                //编辑
+                doPut(uri,params,function(res){
+                   if (callback) {
+                          callback(res);
+                      }
+                },"json");
+            }
+        }
+
+        //加载新闻信息
+        function LoadNewsInfo(newsId){
+            GetNewsInfo(newsId,function(result){
+                if(result.code=="0"){
+                    var newsInfo = result.data;
+                     $("#ip_newsTitle").val(newsInfo.title);
+                     $("#ip_hrefUrl").val(newsInfo.hrefUrl);
+                     $("#ip_newsShortContent").val(newsInfo.shortContent);
+                     $('#summernote').summernote('code', newsInfo.content);
+                }
+            });
+        }
+
+        function GetNewsInfo(newsId,callback){
+            var uri = '/news/'+newsId;
+            doGet(uri,function(res){
+                if (callback) {
+                    callback(res);
+                }
+            });
+        }
+
+        function RediectCompanyList(){
+            $("#iframe_DashBoard",parent.document).attr('src',"/Static/NewsList.html");
+        }
+
+        $(function(){
+             //关闭按钮
+            $(".close-link").click(function(){
+                RediectCompanyList();
+            })
+
+            validator = $("#form_NewsInfo").validate({  
+                rules: {  
+                    newsTitle: { required: true},
+                    newsHrefUrl :{ required: true},
+                    newsShortContent :{ required: true}
+                },  
+                messages: {  
+                    newsTitle: {  
+                        required: "新闻标题不能为空"
+                    } ,
+                    newsHrefUrl: {  
+                        required: "外链地址不能为空"
+                    } ,
+                    newsShortContent: {  
+                        required: "新闻概要不能为空"
+                    }
+                }  
+            });  
+        })
+    </script>
+
+</body>
+
+</html>
