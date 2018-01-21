@@ -46,6 +46,7 @@
 					                <th>外链地址</th>
 					                <th>新闻简介</th>
 					                <th>创建时间</th>
+					                <th>状态</th>
 					                <th style="text-align: center;">操作</th>
 					            </tr>
 				            </thead>
@@ -89,17 +90,17 @@
             /* Init DataTables */
             var oTable = $('#editable').DataTable({
             	lengthChange: false,
-            	dom: 'Bfrtip',
-		       	buttons: [
-		       			// {
-		       			// 	'extend':'print',
-		       			// 	'text':'打印'
-		       			// },
-		       			{
-		       				'extend':'excel',
-		       				'text':'导出'
-		       			}
-		       		],
+            	// dom: 'Bfrtip',
+		       	// buttons: [
+		       	// 		// {
+		       	// 		// 	'extend':'print',
+		       	// 		// 	'text':'打印'
+		       	// 		// },
+		       	// 		{
+		       	// 			'extend':'excel',
+		       	// 			'text':'导出'
+		       	// 		}
+		       	// 	],
             	language: {
 			        "sProcessing": "处理中...",
 			        "sLengthMenu": "显示 _MENU_ 项结果",
@@ -163,6 +164,20 @@
 	                { "data": "hrefUrl" },
 	                { "data": "shortContent" },
 	                { "data": "createTime" },
+	                {  
+		                "data": null,  
+		                "orderable": false,  
+		                "render": function ( data, type, full, meta ) {  
+			                if(data.isEnable)
+			                {
+			                	return "<span class=\"label label-primary\">上线</span>"
+			                }
+			                else{
+			                	return "<span class=\"label label-danger\">已下线</span>"
+			                }
+			                
+			            }
+			        }, 
 	                {  
 		                "data": null,  
 		                "orderable": false,  

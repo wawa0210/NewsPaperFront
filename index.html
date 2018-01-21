@@ -36,7 +36,7 @@
                             </span> <span class="text-muted text-xs block" id="strong_Phone"><b class="caret"></b></span> </span> </a>
                         </div>
                         <div class="logo-element">
-                            风控
+                            新闻
                         </div>
                     </li>
                     <li class="active">
@@ -61,7 +61,7 @@
                     </div> -->
                         <ul class="nav navbar-top-links navbar-right">
                             <li>
-                                <span class="m-r-sm text-muted welcome-message">齐齐哈尔市安全生产应急救援平台风险管控系统</span>
+                                <span class="m-r-sm text-muted welcome-message">小程序管理后台</span>
                             </li>
                             <li>
                                 <!-- 
@@ -128,7 +128,7 @@
                                 progressBar: true,
                                 showMethod: 'slideDown',
                                 timeOut: 500};
-                            toastr.success(result.data.realName, '欢迎登陆齐齐哈尔化学品预警系统');
+                            toastr.success(result.data.realName, '欢迎登陆小程序后台管理系统');
                             }, 1300);
                     LoadMenu(0);
                   }
@@ -149,13 +149,13 @@
         });
 
         function LoadMenu(index){
-            var url="";
-            switch (index) {
-                case 0: url = "/Static/CompanyList.html"; break;
-                // case 1: url = "/Static/CompanyList.html"; break;
-                // case 2: url = "/Static/ManagerList.html"; break;
-                // case 3: url = "/Static/RoleList.html"; break;
-            }
+            var url="/Static/CompanyList.html";
+            // switch (index) {
+            //     case 0: url = "/Static/CompanyList.html"; break;
+            //     // case 1: url = "/Static/CompanyList.html"; break;
+            //     // case 2: url = "/Static/ManagerList.html"; break;
+            //     // case 3: url = "/Static/RoleList.html"; break;
+            // }
             $("#iframe_DashBoard").height($(document).height()+50);
             $("#iframe_DashBoard").attr('src',url);
         }
