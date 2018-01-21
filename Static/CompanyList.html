@@ -168,14 +168,13 @@
 		                "data": null,  
 		                "orderable": false,  
 		                "render": function ( data, type, full, meta ) {  
-			                if(data.isEnable)
-			                {
+			                // if(data.isEnable)
+			                // {
 			                	return "<span class=\"label label-primary\">上线</span>"
-			                }
-			                else{
-			                	return "<span class=\"label label-danger\">已下线</span>"
-			                }
-			                
+			                // }
+			                // else{
+			                // 	return "<span class=\"label label-danger\">已下线</span>"
+			                // }
 			            }
 			        }, 
 	                {  
@@ -191,8 +190,12 @@
             oTable.buttons().container().appendTo($('#editable_filter .col-sm-6:eq(0)'));
         });
 
-        function GetEditButtonStr(companyId,companyName){
-            return '<div class="btn-group"><button class="btn-white btn btn-xs" onclick="EditCompany(\''+companyId+'\')">编辑</button></div>';
+        function GetEditButtonStr(newsId,title){
+        	var renderStr = '<div class="btn-group">';
+	        renderStr += '<button class="btn-white btn btn-xs" onclick="EditNews(\''+newsId+'\')">编辑</button>';
+            renderStr += '<button class="btn-danger btn btn-xs" onclick="DisableNews(\''+newsId+'\')">下线</button></div>';
+
+            return renderStr;
         }
 
 
@@ -208,7 +211,7 @@
         function AddCompanyInfo(){
             $("#iframe_DashBoard",parent.document).attr('src',"/Static/CompanyEdit.html?actionType=add");
         }
-        function EditCompany(companyId){
+        function EditNews(companyId){
             $("#iframe_DashBoard",parent.document).attr('src',"/Static/CompanyEdit.html?actionType=edit&companyId="+companyId);
         }
         //管理危险源信息
@@ -216,18 +219,18 @@
             $("#iframe_DashBoard",parent.document).attr('src',"/Static/DangerousProductList.html?companyId="+companyId+"&companyName="+companyName);
         }
         //删除公司信息
-        function DeleteCompany(companyId){
+        function DisableNews(newsId){
             var dialog = art.dialog({
-                title: '删除企业信息',
-                content: '删除企业信息，同时将删除其危险源信息，请慎重！',
+                title: '下线新闻',
+                content: '下线新闻不可再上线，请慎重！',
                 lock:true,
                 ok: function(){
-                    DeleteCompanyInfo(companyId,function(result){
+                    DisableNewsInfo(newsId,function(result){
                         if(result.code=="0"){
-                        	alert('删除成功')
+                        	alert('下线成功')
                         }
                         else{
-                        	alert("删除失败！")
+                        	alert("下线失败！")
                         }
                         $("#iframe_DashBoard",parent.document).attr('src',"/Static/CompanyList.html");
                     })
@@ -238,10 +241,12 @@
             });
         }
 
-         function DeleteCompanyInfo(companyId,callback){
-            var uri = '/companies/'+companyId;
+         function DisableNewsInfo(newsId,callback){
+         	var data =  {"newsId": newsId,"isEnable": false};
+            data = JSON.stringify(data);
+            var uri = '/news/status';
 
-            doDelete(uri,null,function(res){
+            doPut(uri,data,function(res){
                 if (callback) {
                     callback(res);
                 }
