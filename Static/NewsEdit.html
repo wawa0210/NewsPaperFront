@@ -112,6 +112,11 @@
             {
                 lang: 'zh-CN' ,
                 placeholder: '请输入新闻详情',
+                // callbacks: {
+                //     onImageUpload: function(files, editor, welEditable) {
+                //         sendFile(files[0],editor,welEditable);
+                //     }
+                // }
             });
 
             //判断新增or编辑
@@ -128,6 +133,24 @@
                 $("#hid_newsId").val(newsId);
                 $("#hid_actionType").val("1");
             }
+
+            //图片上传
+            // function sendFile(file,editor,welEditable) {
+            //     debugger;
+            //     data = new FormData();
+            //     data.append("file", file);
+            //     $.ajax({
+            //         data: data,
+            //         type: "POST",
+            //         url: "/ajax/saveimage",
+            //         cache: false,
+            //         contentType: false,
+            //         processData: false,
+            //         success: function(url) {
+            //                 editor.insertImage(welEditable, url);
+            //         }
+            //     });
+            // }
        });
 
         function Cancel(){
