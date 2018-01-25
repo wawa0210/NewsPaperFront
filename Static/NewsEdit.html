@@ -14,8 +14,6 @@
     <link href="/css/plugins/steps/jquery.steps.css" rel="stylesheet">
     <link href="/css/animate.css" rel="stylesheet">
     <link href="/css/style.css" rel="stylesheet">
-    <link href="/css/plugins/summernote/summernote.css" rel="stylesheet">
-    <link href="/css/plugins/summernote/summernote-bs4.css" rel="stylesheet">
 
     <style>
         .wizard > .content > .body { position: relative; }
@@ -59,7 +57,8 @@
                                         </div>
                                          <div class="form-group"><label class="col-sm-2 control-label">新闻详情</label>
                                             <div class="col-sm-9">
-                                                <div  id="summernote"></div>
+                                                <script id="summernote" name="content" type="text/plain">
+                                                </script>
                                             </div>
                                         </div>
                                         <div class="hr-line-dashed"></div>
@@ -98,26 +97,23 @@
     <script src="/js/plugins/datapicker/bootstrap-datepicker.js"></script>
     <!-- Jquery Validate -->
     <script src="/js/plugins/validate/jquery.validate.min.js"></script>
-    <script src="/js/plugins/summernote/summernote.js"></script>
+    <script type="text/javascript" charset="utf-8" src="/js/plugins/ueditor/ueditor.config.js"></script>
+    <script type="text/javascript" charset="utf-8" src="/js/plugins/ueditor/ueditor.all.min.js"> </script>
+    <!--建议手动加在语言，避免在ie下有时因为加载语言失败导致编辑器加载失败-->
+    <!--这里加载的语言文件会覆盖你在配置项目里添加的语言类型，比如你在配置项目里配置的是英文，这里加载的中文，那最后就是中文-->
+    <script type="text/javascript" charset="utf-8" src="/js/plugins/ueditor/lang/zh-cn/zh-cn.js"></script>
+    <!-- <script src="/js/plugins/summernote/summernote.js"></script>
     <script src="/js/plugins/summernote/summernote-bs4.min.js"></script>
     <script src="/js/plugins/summernote/summernote-zh-CN.js"></script>
-
+    <script type="text/javascript" src="/js/plugins/qiniu/qiniu.js"></script> -->
 
     <script>
+
+        var ue = UE.getEditor('summernote');
 
         var validator;
 
         $(document).ready(function(){
-             $('#summernote').summernote(
-            {
-                lang: 'zh-CN' ,
-                placeholder: '请输入新闻详情',
-                // callbacks: {
-                //     onImageUpload: function(files, editor, welEditable) {
-                //         sendFile(files[0],editor,welEditable);
-                //     }
-                // }
-            });
 
             //判断新增or编辑
             var actionType=getUrlParam("actionType");
@@ -133,24 +129,6 @@
                 $("#hid_newsId").val(newsId);
                 $("#hid_actionType").val("1");
             }
-
-            //图片上传
-            // function sendFile(file,editor,welEditable) {
-            //     debugger;
-            //     data = new FormData();
-            //     data.append("file", file);
-            //     $.ajax({
-            //         data: data,
-            //         type: "POST",
-            //         url: "/ajax/saveimage",
-            //         cache: false,
-            //         contentType: false,
-            //         processData: false,
-            //         success: function(url) {
-            //                 editor.insertImage(welEditable, url);
-            //         }
-            //     });
-            // }
        });
 
         function Cancel(){
