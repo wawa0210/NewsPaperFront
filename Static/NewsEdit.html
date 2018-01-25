@@ -148,8 +148,7 @@
                 newsInfo.title = $("#ip_newsTitle").val();
                 newsInfo.shortContent = $("#ip_newsShortContent").val();
                 newsInfo.isEnable = true;
-                newsInfo.content = $('#summernote').summernote('code');
-                 $('#summernote').summernote('destroy');
+                newsInfo.content = UE.getEditor('summernote').getContent();
                 newsInfo.hrefUrl = $("#ip_hrefUrl").val();
                 EditNewsInfo(newsInfo,function(result){
                    if(result.code=="0"){
@@ -190,7 +189,7 @@
                      $("#ip_newsTitle").val(newsInfo.title);
                      $("#ip_hrefUrl").val(newsInfo.hrefUrl);
                      $("#ip_newsShortContent").val(newsInfo.shortContent);
-                     $('#summernote').summernote('code', newsInfo.content);
+                     UE.getEditor('summernote').setContent(newsInfo.content, false);
                 }
             });
         }
