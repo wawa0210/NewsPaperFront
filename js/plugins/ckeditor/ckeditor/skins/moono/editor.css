@@ -1,0 +1,50 @@
+
+
+
+
+
+@import url("reset.css");
+
+
+@import url("mainui.css");
+
+
+@import url("panel.css");
+
+
+@import url("colorpanel.css");
+
+
+@import url("toolbar.css");
+
+
+@import url("menu.css");
+
+
+@import url("richcombo.css");
+
+
+@import url("elementspath.css");
+
+
+@import url("presets.css");
+
+
+@import url("notification.css");
+
+
+.cke_chrome
+{
+	visibility: inherit;
+}
+
+
+.cke_voice_label
+{
+	display: none;
+}
+
+legend.cke_voice_label
+{
+	display: none;
+}

@@ -1,0 +1,17 @@
+
+
+
+
+
+@import url("editor.css");
+
+.cke_bottom
+{
+	padding-bottom: 3px;
+}
+
+.cke_combo_text
+{
+	margin-bottom: -1px;
+	margin-top: 1px;
+}
