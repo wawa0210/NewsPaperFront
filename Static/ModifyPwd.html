@@ -121,7 +121,10 @@
        });
 
         function Cancel(){
-           Loginout();
+            localStorage.clear();
+            $.removeCookie("token");
+            $.removeCookie("userid");
+            window.parent.location.href = "/login.html";
         }
 
         function SaveUserPwd(){
