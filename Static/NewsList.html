@@ -46,7 +46,6 @@
 					                <th>外链地址</th>
 					                <th>新闻简介</th>
 					                <th>创建时间</th>
-					                <th>状态</th>
 					                <th style="text-align: center;">操作</th>
 					            </tr>
 				            </thead>
@@ -160,7 +159,13 @@
             	},
             	//列表表头字段
 	            columns: [
-	                { "data": "title" },
+	                { 
+	                	"data": null,  
+		                "orderable": false,  
+		                "render": function ( data, type, full, meta ) {  
+			                return data.title +"&nbsp;&nbsp;&nbsp;"+ GetViewButtonStr(data.isEnable);  
+			            }  
+	            	},
 	                { "data": "hrefUrl" },
 	                { "data": "shortContent" },
 	                { "data": "createTime" },
@@ -168,20 +173,7 @@
 		                "data": null,  
 		                "orderable": false,  
 		                "render": function ( data, type, full, meta ) {  
-			                // if(data.isEnable)
-			                // {
-			                	return "<span class=\"label label-primary\">上线</span>"
-			                // }
-			                // else{
-			                // 	return "<span class=\"label label-danger\">已下线</span>"
-			                // }
-			            }
-			        }, 
-	                {  
-		                "data": null,  
-		                "orderable": false,  
-		                "render": function ( data, type, full, meta ) {  
-			                return GetEditButtonStr(data.newsId,data.title);  
+			                return GetEditButtonStr(data.newsId,data.title,data.isEnable);  
 			            }  
 			        }  
 	            ]
@@ -190,15 +182,30 @@
             oTable.buttons().container().appendTo($('#editable_filter .col-sm-6:eq(0)'));
         });
 
-        function GetEditButtonStr(newsId,title){
+        function GetViewButtonStr(isEnable){
+        	if(isEnable){
+        		return "<span class=\"label label-primary\">已上线</span>";
+        	}
+        	else{
+        		return "<span class=\"label label-danger\">已下线</span>";
+        	}
+        }
+
+        function GetEditButtonStr(newsId,title,isEnable){
         	var renderStr = '<div class="btn-group">';
 	        renderStr += '<button class="btn-white btn btn-xs" onclick="EditNews(\''+newsId+'\')">编辑</button>';
-            renderStr += '<button class="btn-danger btn btn-xs" onclick="DisableNews(\''+newsId+'\')">下线</button></div>';
+	        if(isEnable){
+	        	renderStr += '<button class="btn-danger btn btn-xs" onclick="DisableNews(\''+newsId+'\')">下线</button></div>';
+	        }
+            else{
+	        	renderStr += '<button class="btn-primary btn btn-xs" onclick="ReStoreNews(\''+newsId+'\')">上线</button></div>';
+	        	renderStr += '<button class="btn-danger btn btn-xs" onclick="DeleteNews(\''+newsId+'\')">删除</button></div>';
+            }
 
             return renderStr;
         }
 	    function GetPageNewsInfo(param,callback){
-		  	var uri = '/news?title='+param.title+'&currentPage='+param.currentPage+'&pageSize='+param.pageSize;
+		  	var uri = '/news?isAll=true&title='+param.title+'&currentPage='+param.currentPage+'&pageSize='+param.pageSize;
 		    doGet(uri,function(res){
 		        if (callback) {
 		            callback(res);
@@ -212,6 +219,7 @@
         function EditNews(newsId){
             $("#iframe_DashBoard",parent.document).attr('src',"/Static/NewsEdit.html?actionType=edit&newsId="+newsId);
         }
+
         function DisableNews(newsId){
             var dialog = art.dialog({
                 title: '下线新闻',
@@ -234,6 +242,50 @@
             });
         }
 
+        function ReStoreNews(newsId){
+            var dialog = art.dialog({
+                title: '重新上线新闻',
+                content: '重新上线，请慎重！',
+                lock:true,
+                ok: function(){
+                    DeleteNewsInfo(newsId,function(result){
+                        if(result.code=="0"){
+                        	alert('上线成功')
+                        }
+                        else{
+                        	alert("上线失败！")
+                        }
+                        $("#iframe_DashBoard",parent.document).attr('src',"/Static/NewsList.html");
+                    })
+                },
+                cancel:function(){
+                    alert('wawa');
+                }
+            });
+        }
+
+        function DeleteNews(newsId){
+            var dialog = art.dialog({
+                title: '删除新闻',
+                content: '删除新闻不可恢复，请慎重！',
+                lock:true,
+                ok: function(){
+                    DeleteNewsInfo(newsId,function(result){
+                        if(result.code=="0"){
+                        	alert('删除成功')
+                        }
+                        else{
+                        	alert("删除失败！")
+                        }
+                        $("#iframe_DashBoard",parent.document).attr('src',"/Static/NewsList.html");
+                    })
+                },
+                cancel:function(){
+                    alert('wawa');
+                }
+            });
+        }
+
          function DisableNewsInfo(newsId,callback){
          	var data =  {"newsId": newsId,"isEnable": false};
             data = JSON.stringify(data);
@@ -245,6 +297,25 @@
                 }
             },"json");
         }
+
+        function DeleteNewsInfo(newsId,callback){
+            var uri = '/news/'+newsId;
+            doDelete(uri,null,function(res){
+                if (callback) {
+                    callback(res);
+                }
+            },"json");
+        }
+
+        function RestoreNewsInfo(newsId,callback){
+            var uri = '/news/'+newsId+'/restore';
+            doPost(uri,null,function(res){
+                if (callback) {
+                    callback(res);
+                }
+            },"json");
+        }
+
 
     </script>
 
