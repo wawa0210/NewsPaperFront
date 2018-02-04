@@ -223,7 +223,7 @@
         function DisableNews(newsId){
             var dialog = art.dialog({
                 title: '下线新闻',
-                content: '下线新闻不可再上线，请慎重！',
+                content: '下线新闻，请慎重！',
                 lock:true,
                 ok: function(){
                     DisableNewsInfo(newsId,function(result){
@@ -248,7 +248,7 @@
                 content: '重新上线，请慎重！',
                 lock:true,
                 ok: function(){
-                    DeleteNewsInfo(newsId,function(result){
+                    RestoreNewsInfo(newsId,function(result){
                         if(result.code=="0"){
                         	alert('上线成功')
                         }
