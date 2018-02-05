@@ -49,6 +49,9 @@
                                         <div class="form-group"><label class="col-sm-2 control-label">外链地址</label>
                                             <div class="col-sm-9"><input type="text" id="ip_hrefUrl" name="newsHrefUrl" class="form-control"></div>
                                         </div>
+                                        <div class="form-group"><label class="col-sm-2 control-label">媒体信息</label>
+                                            <div class="col-sm-9"><input type="text" id="ip_media" name="newsHrefUrl" class="form-control"></div>
+                                        </div>
                                         <div class="form-group"><label class="col-sm-2 control-label">新闻概要</label>
                                             <div class="col-sm-9">
                                                 <textarea class="form-control" name="newsShortContent" id="ip_newsShortContent" ></textarea>
@@ -163,6 +166,7 @@
                 newsInfo.isEnable = true;
                 newsInfo.content = CKEDITOR.instances.summernote.getData();
                 newsInfo.hrefUrl = $("#ip_hrefUrl").val();
+                newsInfo.media = $("#ip_media").val();
                 EditNewsInfo(newsInfo,function(result){
                    if(result.code=="0"){
                       alert("保存成功");
@@ -201,6 +205,7 @@
                     var newsInfo = result.data;
                      $("#ip_newsTitle").val(newsInfo.title);
                      $("#ip_hrefUrl").val(newsInfo.hrefUrl);
+                     $("#ip_media").val(newsInfo.media);
                      $("#ip_newsShortContent").val(newsInfo.shortContent);
                      CKEDITOR.instances.summernote.setData(newsInfo.content);
                 }
@@ -229,15 +234,11 @@
             validator = $("#form_NewsInfo").validate({  
                 rules: {  
                     newsTitle: { required: true},
-                    newsHrefUrl :{ required: true},
                     newsShortContent :{ required: true}
                 },  
                 messages: {  
                     newsTitle: {  
                         required: "新闻标题不能为空"
-                    } ,
-                    newsHrefUrl: {  
-                        required: "外链地址不能为空"
                     } ,
                     newsShortContent: {  
                         required: "新闻概要不能为空"
