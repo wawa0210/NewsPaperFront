@@ -43,6 +43,14 @@
                             <div class="row">
                                 <div class="">
                                     <form class="form-horizontal" id="form_NewsInfo">
+                                        <div class="form-group"><label class="col-sm-2 control-label">新闻类别</label>
+                                            <div class="col-sm-9">
+                                                <select id="sel_NewsType" class="form-control">
+                                                    <option value="1" selected="selected">新闻类</option>
+                                                    <option value="2">审核专用</option>
+                                                </select>
+                                            </div>
+                                        </div>
                                         <div class="form-group"><label class="col-sm-2 control-label">新闻标题</label>
                                             <div class="col-sm-9"><input type="text" id="ip_newsTitle" name="newsTitle" class="form-control" required></div>
                                         </div>
@@ -129,6 +137,7 @@
                 {
                     LoadNewsInfo(newsId);
                 }
+                $("#sel_NewsType").attr("disabled","disabled");
                 $("#hid_newsId").val(newsId);
                 $("#hid_actionType").val("1");
             }
@@ -167,6 +176,7 @@
                 newsInfo.content = CKEDITOR.instances.summernote.getData();
                 newsInfo.hrefUrl = $("#ip_hrefUrl").val();
                 newsInfo.media = $("#ip_media").val();
+                newsInfo.newsType = $("#sel_NewsType").val();
                 EditNewsInfo(newsInfo,function(result){
                    if(result.code=="0"){
                       alert("保存成功");
@@ -206,6 +216,7 @@
                      $("#ip_newsTitle").val(newsInfo.title);
                      $("#ip_hrefUrl").val(newsInfo.hrefUrl);
                      $("#ip_media").val(newsInfo.media);
+                     $("#sel_NewsType").val(newsInfo.newsType);
                      $("#ip_newsShortContent").val(newsInfo.shortContent);
                      CKEDITOR.instances.summernote.setData(newsInfo.content);
                 }

@@ -163,7 +163,7 @@
 	                	"data": null,  
 		                "orderable": false,  
 		                "render": function ( data, type, full, meta ) {  
-			                return data.title +"&nbsp;&nbsp;&nbsp;"+ GetViewButtonStr(data.isEnable);  
+			                return data.title +"&nbsp;&nbsp;&nbsp;"+ GetViewStatusButtonStr(data.isEnable)+"<br/><br/>"+GetViewNewsTypeButtonStr(data.newsType);
 			            }  
 	            	},
 	                { "data": "hrefUrl" },
@@ -182,7 +182,16 @@
             oTable.buttons().container().appendTo($('#editable_filter .col-sm-6:eq(0)'));
         });
 
-        function GetViewButtonStr(isEnable){
+        function GetViewNewsTypeButtonStr(newsType){
+            if(newsType==1){
+                return "<span class=\"label label-warning\">新闻类</span>";
+            }
+            else{
+                return "<span class=\"label label-danger\">审核专用</span>";
+            }
+        }
+
+        function GetViewStatusButtonStr(isEnable){
         	if(isEnable){
         		return "<span class=\"label label-primary\">已上线</span>";
         	}
