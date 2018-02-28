@@ -63,7 +63,7 @@
                                     </form>
                                     <div class="col-sm-4 col-sm-offset-2">
                                         <button class="btn btn-default" id="btn_Cancel" onclick="Cancel()">取消</button>
-                                        <button onclick="SaveNewsInfo()"  class="btn btn-primary" id="btn_Save">保存</button>
+                                        <button onclick="SaveVersionInfo()"  class="btn btn-primary" id="btn_Save">保存</button>
                                     </div>
                                 </div>
                             </div>
@@ -74,8 +74,7 @@
         </div>
 
     <input type="hidden"  id="hid_actionType" value="0" />
-    <input type="hidden"  id="hid_newsId" value="0" />
-    <input type="hidden"  id="hid_county" />
+    <input type="hidden"  id="hid_versionId" value="0" />
     <!-- Mainly scripts -->
     <script src="/js/jquery-2.1.1.js"></script>
     <script src="/js/bootstrap.min.js"></script>
@@ -92,28 +91,12 @@
     <!-- Jquery Validate -->
     <script src="/js/plugins/validate/jquery.validate.min.js"></script>
     <script src="/js/common.js"></script>
-    <script src="/js/plugins/datapicker/bootstrap-datepicker.js"></script>
     <!-- Jquery Validate -->
     <script src="/js/plugins/validate/jquery.validate.min.js"></script>
-    <script src="/js/plugins/ckeditor/ckeditor/ckeditor.js"></script>
-    <script type="text/javascript" src="/js/plugins/ckeditor/js/plupload.full.min.js"></script>
-    <script type="text/javascript" src="/js/plugins/ckeditor/js/qiniu.min.js"></script>
 
     <script>
-
-        <!-- 环境初始化 开始-->
-        var saveto ='qiniu';   //储存位置为七牛云，对应于插件里的判断值
-        var qiniu_uptoken='xx___your_uptoken___xxx';  //七牛云服务端生成的uptoken
-        var qiniu_upload_domain='http://upload.qiniu.com';   //七牛云上传地址，一般无需修改，https需要修改成对应的七牛云https上传域名
-        var qiniu_bucket_domain='http://qcode.entrada.cn';   //七牛云bucket设置的域名
-        <!-- 环境初始化 结束-->
-
-
         var validator;
-        CKEDITOR.replace('summernote');
         $(document).ready(function(){
-
-            GetQiniuToken();
 
             //判断新增or编辑
             var actionType=getUrlParam("actionType");
@@ -121,52 +104,33 @@
                 $("#hid_actionType").val("0");
             }
             else{
-                var newsId = getUrlParam("newsId");
-                if(newsId!=null && newsId!="")
+                var versionId = getUrlParam("versionId");
+                if(versionId!=null && versionId!="")
                 {
-                    LoadNewsInfo(newsId);
+                    LoadVersionInfo(versionId);
                 }
-                $("#sel_NewsType").attr("disabled","disabled");
-                $("#hid_newsId").val(newsId);
+                $("#hid_versionId").val(versionId);
                 $("#hid_actionType").val("1");
             }
        });
-
-        //获得qiniu上传token
-        function GetQiniuToken(){
-            var uri = '/qinius/token';
-            doGet(uri,function(res){
-                 if(res.code=="0"){
-                    qiniu_uptoken = res.data;
-                 }
-                else{
-                    alert("页面存在错误");
-                }
-            });
-        }
 
         function Cancel(){
             $("#iframe_DashBoard",parent.document).attr('src',"/Static/VersionsList.html");
         }
 
-        function SaveNewsInfo(){
+        function SaveVersionInfo(){
             var formInfo = $("#form_NewsInfo");
-            formInfo.validate().settings.ignore = ":disabled,:hidden";
             if(!formInfo.valid()){
                 validator.focusInvalid();
                 return false;
             }
-
-            var newsInfo ={};
-                newsInfo.newsId = $("#hid_newsId").val();
-                newsInfo.title = $("#ip_newsTitle").val();
-                newsInfo.shortContent = $("#ip_newsShortContent").val();
-                newsInfo.isEnable = true;
-                newsInfo.content = CKEDITOR.instances.summernote.getData();
-                newsInfo.hrefUrl = $("#ip_hrefUrl").val();
-                newsInfo.media = $("#ip_media").val();
-                newsInfo.newsType = $("#sel_NewsType").val();
-                EditNewsInfo(newsInfo,function(result){
+            debugger;
+            var versionInfo ={};
+                versionInfo.versionName = $("#ip_versionName").val();
+                versionInfo.versionStatus = $("#sel_VersionStatus").val();
+                versionInfo.remark = $("#ip_remark").val();
+                versionInfo.versionId = $("#hid_versionId").val();
+                EditVersionInfo(versionInfo,function(result){
                    if(result.code=="0"){
                       alert("保存成功");
                       Cancel();
@@ -177,8 +141,8 @@
                 });
         }
 
-        function EditNewsInfo(params,callback){
-            var uri = '/news';
+        function EditVersionInfo(params,callback){
+            var uri = '/versions';
             params = JSON.stringify(params);
             if($("#hid_actionType").val()=="0"){
                 doPost(uri,params,function(res){
@@ -198,22 +162,19 @@
         }
 
         //加载新闻信息
-        function LoadNewsInfo(newsId){
-            GetNewsInfo(newsId,function(result){
+        function LoadVersionInfo(versionId){
+            GetVersionInfo(versionId,function(result){
                 if(result.code=="0"){
-                    var newsInfo = result.data;
-                     $("#ip_newsTitle").val(newsInfo.title);
-                     $("#ip_hrefUrl").val(newsInfo.hrefUrl);
-                     $("#ip_media").val(newsInfo.media);
-                     $("#sel_NewsType").val(newsInfo.newsType);
-                     $("#ip_newsShortContent").val(newsInfo.shortContent);
-                     CKEDITOR.instances.summernote.setData(newsInfo.content);
+                    var versionInfo = result.data;
+                     $("#ip_versionName").val(versionInfo.versionName);
+                     $("#sel_VersionStatus").val(versionInfo.versionStatus);
+                     $("#ip_remark").val(versionInfo.remark);
                 }
             });
         }
 
-        function GetNewsInfo(newsId,callback){
-            var uri = '/news/'+newsId;
+        function GetVersionInfo(versionId,callback){
+            var uri = '/versions/'+versionId;
             doGet(uri,function(res){
                 if (callback) {
                     callback(res);
@@ -221,28 +182,24 @@
             });
         }
 
-        function RediectCompanyList(){
+        function RediectVersionsList(){
             $("#iframe_DashBoard",parent.document).attr('src',"/Static/VersionsList.html");
         }
 
         $(function(){
              //关闭按钮
             $(".close-link").click(function(){
-                RediectCompanyList();
+                RediectVersionsList();
             })
 
             validator = $("#form_NewsInfo").validate({  
                 rules: {  
                     versionName: { required: true},
-                    newsShortContent :{ required: true}
                 },  
                 messages: {  
                     versionName: {  
                         required: "版本名称不能为空"
-                    } ,
-                    newsShortContent: {  
-                        required: "新闻概要不能为空"
-                    }
+                    } 
                 }  
             });  
         })
