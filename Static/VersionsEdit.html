@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>新闻管理平台</title>
+
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/font-awesome/css/font-awesome.css" rel="stylesheet">
+    <link href="/css/plugins/iCheck/custom.css" rel="stylesheet">
+    <link href="/css/plugins/steps/jquery.steps.css" rel="stylesheet">
+    <link href="/css/animate.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
+    <style>
+        .wizard > .content > .body { position: relative; }
+        .sel_Disable{
+        }
+    </style>
+
+</head>
+
+<body style="background-color: #fdfeff;">
+    <div id="wrapper">
+        <div>
+           <div class="row">
+                <div class="col-lg-12">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h5>版本编辑</small></h5>
+                            <div class="ibox-tools">
+                                <a class="collapse-link">
+                                    <i class="fa fa-chevron-up"></i>
+                                </a>
+                                <a class="close-link">
+                                    <i class="fa fa-times"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="ibox-content">
+                            <div class="row">
+                                <div class="">
+                                    <form class="form-horizontal" id="form_NewsInfo">
+                                        <div class="form-group"><label class="col-sm-2 control-label">当前状态</label>
+                                            <div class="col-sm-9">
+                                                <select id="sel_VersionStatus" class="form-control">
+                                                    <option value="1" selected="selected">审核中</option>
+                                                    <option value="2">已通过</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group"><label class="col-sm-2 control-label">版本名称</label>
+                                            <div class="col-sm-9"><input type="text" id="ip_versionName" name="versionName" class="form-control" required></div>
+                                        </div>
+                                        <div class="form-group"><label class="col-sm-2 control-label">备注</label>
+                                            <div class="col-sm-9">
+                                                <textarea class="form-control" name="versionRemark" id="ip_remark" ></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="hr-line-dashed"></div>
+                                    </form>
+                                    <div class="col-sm-4 col-sm-offset-2">
+                                        <button class="btn btn-default" id="btn_Cancel" onclick="Cancel()">取消</button>
+                                        <button onclick="SaveNewsInfo()"  class="btn btn-primary" id="btn_Save">保存</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    <input type="hidden"  id="hid_actionType" value="0" />
+    <input type="hidden"  id="hid_newsId" value="0" />
+    <input type="hidden"  id="hid_county" />
+    <!-- Mainly scripts -->
+    <script src="/js/jquery-2.1.1.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/plugins/metisMenu/jquery.metisMenu.js"></script>
+    <script src="/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+
+    <!-- Custom and plugin javascript -->
+    <script src="/js/inspinia.js"></script>
+    <script src="/js/plugins/pace/pace.min.js"></script>
+
+    <!-- Steps -->
+    <script src="/js/plugins/staps/jquery.steps.min.js"></script>
+
+    <!-- Jquery Validate -->
+    <script src="/js/plugins/validate/jquery.validate.min.js"></script>
+    <script src="/js/common.js"></script>
+    <script src="/js/plugins/datapicker/bootstrap-datepicker.js"></script>
+    <!-- Jquery Validate -->
+    <script src="/js/plugins/validate/jquery.validate.min.js"></script>
+    <script src="/js/plugins/ckeditor/ckeditor/ckeditor.js"></script>
+    <script type="text/javascript" src="/js/plugins/ckeditor/js/plupload.full.min.js"></script>
+    <script type="text/javascript" src="/js/plugins/ckeditor/js/qiniu.min.js"></script>
+
+    <script>
+
+        <!-- 环境初始化 开始-->
+        var saveto ='qiniu';   //储存位置为七牛云，对应于插件里的判断值
+        var qiniu_uptoken='xx___your_uptoken___xxx';  //七牛云服务端生成的uptoken
+        var qiniu_upload_domain='http://upload.qiniu.com';   //七牛云上传地址，一般无需修改，https需要修改成对应的七牛云https上传域名
+        var qiniu_bucket_domain='http://qcode.entrada.cn';   //七牛云bucket设置的域名
+        <!-- 环境初始化 结束-->
+
+
+        var validator;
+        CKEDITOR.replace('summernote');
+        $(document).ready(function(){
+
+            GetQiniuToken();
+
+            //判断新增or编辑
+            var actionType=getUrlParam("actionType");
+            if(actionType=="add"){
+                $("#hid_actionType").val("0");
+            }
+            else{
+                var newsId = getUrlParam("newsId");
+                if(newsId!=null && newsId!="")
+                {
+                    LoadNewsInfo(newsId);
+                }
+                $("#sel_NewsType").attr("disabled","disabled");
+                $("#hid_newsId").val(newsId);
+                $("#hid_actionType").val("1");
+            }
+       });
+
+        //获得qiniu上传token
+        function GetQiniuToken(){
+            var uri = '/qinius/token';
+            doGet(uri,function(res){
+                 if(res.code=="0"){
+                    qiniu_uptoken = res.data;
+                 }
+                else{
+                    alert("页面存在错误");
+                }
+            });
+        }
+
+        function Cancel(){
+            $("#iframe_DashBoard",parent.document).attr('src',"/Static/VersionsList.html");
+        }
+
+        function SaveNewsInfo(){
+            var formInfo = $("#form_NewsInfo");
+            formInfo.validate().settings.ignore = ":disabled,:hidden";
+            if(!formInfo.valid()){
+                validator.focusInvalid();
+                return false;
+            }
+
+            var newsInfo ={};
+                newsInfo.newsId = $("#hid_newsId").val();
+                newsInfo.title = $("#ip_newsTitle").val();
+                newsInfo.shortContent = $("#ip_newsShortContent").val();
+                newsInfo.isEnable = true;
+                newsInfo.content = CKEDITOR.instances.summernote.getData();
+                newsInfo.hrefUrl = $("#ip_hrefUrl").val();
+                newsInfo.media = $("#ip_media").val();
+                newsInfo.newsType = $("#sel_NewsType").val();
+                EditNewsInfo(newsInfo,function(result){
+                   if(result.code=="0"){
+                      alert("保存成功");
+                      Cancel();
+                   }
+                   else{
+                    alert("保存失败");
+                   }
+                });
+        }
+
+        function EditNewsInfo(params,callback){
+            var uri = '/news';
+            params = JSON.stringify(params);
+            if($("#hid_actionType").val()=="0"){
+                doPost(uri,params,function(res){
+                   if (callback) {
+                          callback(res);
+                      }
+                },"json");
+            }
+            else{
+                //编辑
+                doPut(uri,params,function(res){
+                   if (callback) {
+                          callback(res);
+                      }
+                },"json");
+            }
+        }
+
+        //加载新闻信息
+        function LoadNewsInfo(newsId){
+            GetNewsInfo(newsId,function(result){
+                if(result.code=="0"){
+                    var newsInfo = result.data;
+                     $("#ip_newsTitle").val(newsInfo.title);
+                     $("#ip_hrefUrl").val(newsInfo.hrefUrl);
+                     $("#ip_media").val(newsInfo.media);
+                     $("#sel_NewsType").val(newsInfo.newsType);
+                     $("#ip_newsShortContent").val(newsInfo.shortContent);
+                     CKEDITOR.instances.summernote.setData(newsInfo.content);
+                }
+            });
+        }
+
+        function GetNewsInfo(newsId,callback){
+            var uri = '/news/'+newsId;
+            doGet(uri,function(res){
+                if (callback) {
+                    callback(res);
+                }
+            });
+        }
+
+        function RediectCompanyList(){
+            $("#iframe_DashBoard",parent.document).attr('src',"/Static/VersionsList.html");
+        }
+
+        $(function(){
+             //关闭按钮
+            $(".close-link").click(function(){
+                RediectCompanyList();
+            })
+
+            validator = $("#form_NewsInfo").validate({  
+                rules: {  
+                    versionName: { required: true},
+                    newsShortContent :{ required: true}
+                },  
+                messages: {  
+                    versionName: {  
+                        required: "版本名称不能为空"
+                    } ,
+                    newsShortContent: {  
+                        required: "新闻概要不能为空"
+                    }
+                }  
+            });  
+        })
+    </script>
+
+</body>
+
+</html>
