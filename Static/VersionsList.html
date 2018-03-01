@@ -161,7 +161,13 @@
                 columns: [
                     { "data": "versionId" },
                     { "data": "versionName" },
-                    { "data": "versionStatus" },
+                    {  
+                        "data": null,  
+                        "orderable": false,  
+                        "render": function ( data, type, full, meta ) {  
+                            return GetVersionStatusStr(data.versionStatus);  
+                        }  
+                    } ,
                     { "data": "createTime" },
                     {  
                         "data": null,  
@@ -175,6 +181,15 @@
 
             oTable.buttons().container().appendTo($('#editable_filter .col-sm-6:eq(0)'));
         });
+
+        function GetVersionStatusStr(versionStatus){
+            if(versionStatus==2){
+                return "<span class=\"label label-primary\">已发布</span>";
+            }
+            else{
+                return "<span class=\"label label-danger\">审核中</span>";
+            }
+        }
 
 
         function GetViewStatusButtonStr(isEnable){
